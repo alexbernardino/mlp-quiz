@@ -104,7 +104,7 @@ export const questions = [
   {
     "section": "Activations & outputs",
     "category": "Forward pass",
-    "prompt": "A ReLU unit receives z₁ = 2 and z₂ = −1, with w₀j = 0.5, w₁j = 1 and w₂j = 2. What are its preactivation sⱼ and output zⱼ?",
+    "prompt": "A ReLU unit receives z₁ = 2 and z₂ = −1, with w₀ⱼ = 0.5, w₁ⱼ = 1 and w₂ⱼ = 2. What are its preactivation sⱼ and output zⱼ?",
     "options": [
       "sⱼ = 0.5, zⱼ = 0.5",
       "sⱼ = −0.5, zⱼ = 0",
@@ -220,7 +220,7 @@ export const questions = [
       "−0.15"
     ],
     "answer": 0,
-    "explanation": "The weight gradient is source output × destination sensitivity: ∂L/∂wᵢⱼ = zᵢεⱼ = −0.6. It measures the local effect on loss, not the update itself. A bias has constant input z₀ = 1, so ∂L/∂w₀j = εⱼ.",
+    "explanation": "The weight gradient is source output × destination sensitivity: ∂L/∂wᵢⱼ = zᵢεⱼ = −0.6. It measures the local effect on loss, not the update itself. A bias has constant input z₀ = 1, so ∂L/∂w₀ⱼ = εⱼ.",
     "activity": "At η = 0.1 without momentum, this weight updates by +0.06. The bias gradient is εⱼ = 0.3, giving a bias update of −0.03.",
     "slides": [
       170,
