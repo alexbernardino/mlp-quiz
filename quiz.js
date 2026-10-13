@@ -12,6 +12,14 @@ function escapeHtml(value) {
   })[character]);
 }
 
+function formatMathText(value) {
+  // Render complete index tokens, including letters without Unicode subscripts.
+  return escapeHtml(value).replace(
+    /(^|[^A-Za-z0-9\u0370-\u03ff])([A-Za-z\u0370-\u03ff])_(?:\{([A-Za-z0-9]+)\}|([A-Za-z0-9]+))/g,
+    (_match, prefix, variable, braced, plain) => `${prefix}${variable}<sub>${braced ?? plain}</sub>`
+  );
+}
+
 function score() {
   return answers.reduce((total, choice, index) => total + Number(choice === questions[index].answer), 0);
 }
@@ -71,13 +79,13 @@ function renderQuestion() {
       <p class="setup-note"><strong>Chapter scope:</strong> Slides 149–179. Follow the loss and averaging conventions stated in each question. Choose one best answer, then check the explanation.</p>
       <div class="progress-row"><span>Question ${current + 1} of ${questions.length}</span><div class="progress-track" role="progressbar" aria-label="Quiz progress" aria-valuemin="0" aria-valuemax="${questions.length}" aria-valuenow="${current + 1}"><div style="width:${((current + 1) / questions.length) * 100}%"></div></div><strong>${score()} points</strong></div>
       <article class="question-card">
-        <div class="question-top"><div><p class="question-label">${escapeHtml(q.category)}</p><h2 id="question-title" tabindex="-1">${escapeHtml(q.prompt)}</h2></div>${visual(q.section)}</div>
+        <div class="question-top"><div><p class="question-label">${escapeHtml(q.category)}</p><h2 id="question-title" tabindex="-1">${formatMathText(q.prompt)}</h2></div>${visual(q.section)}</div>
         <div class="answers" role="group" aria-label="Answer choices">${q.options.map((option, index) => {
           const status = answered ? (index === q.answer ? "answer-correct" : index === choice ? "answer-wrong" : "") : "";
           const mark = answered && index === q.answer ? "✓" : answered && index === choice ? "×" : String.fromCharCode(65 + index);
-          return `<button type="button" data-choice="${index}" ${answered ? "disabled" : ""} aria-pressed="${choice === index}" class="${status}"><span aria-hidden="true">${mark}</span>${escapeHtml(option)}</button>`;
+          return `<button type="button" data-choice="${index}" ${answered ? "disabled" : ""} aria-pressed="${choice === index}" class="${status}"><span aria-hidden="true">${mark}</span>${formatMathText(option)}</button>`;
         }).join("")}</div>
-        ${answered ? `<div class="feedback ${choice === q.answer ? "correct" : "incorrect"}" role="status" tabindex="-1"><strong>${choice === q.answer ? "Correct." : "Not quite."}</strong><p>${escapeHtml(q.explanation)}</p><div class="try-it"><b>Check it:</b> ${escapeHtml(q.activity)}</div></div>` : ""}
+        ${answered ? `<div class="feedback ${choice === q.answer ? "correct" : "incorrect"}" role="status" tabindex="-1"><strong>${choice === q.answer ? "Correct." : "Not quite."}</strong><p>${formatMathText(q.explanation)}</p><div class="try-it"><b>Check it:</b> ${formatMathText(q.activity)}</div></div>` : ""}
         <div class="card-actions"><button type="button" class="secondary" data-action="previous" ${current === 0 ? "disabled" : ""}>← Previous</button><button type="button" class="primary" data-action="next" ${!answered ? "disabled" : ""}>${current === questions.length - 1 ? "See results" : "Next question →"}</button></div>
       </article>
     </section>
